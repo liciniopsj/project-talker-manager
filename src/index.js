@@ -1,4 +1,5 @@
 const express = require('express');
+const { talkerRouter, loginRouter } = require('./routes');
 
 const app = express();
 app.use(express.json());
@@ -11,6 +12,10 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+app
+  .use('/talker', talkerRouter)
+  .use('/login', loginRouter);
+
 app.listen(PORT, () => {
-  console.log('Online');
+  console.log(`Server Online on Port ${PORT}, All systems nominal`);
 });
