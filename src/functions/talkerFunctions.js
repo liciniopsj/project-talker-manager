@@ -1,7 +1,9 @@
 const getTalkerData = require('../functions/getTalkerData');
+const fs = require('fs').promises;
 
 const OK = 200;
 const NOT_FOUND = 404;
+const CREATED = 201;
 
 const getAllTalkers = async (_req, res) => {
   const data = await getTalkerData();
@@ -19,7 +21,19 @@ const getTalkerById = async (req, res) => {
   };
 };
 
+const addNewTalker = async (req, res) => {
+  const data = await getTalkerData();
+  const [lastId] = data.slice(-1);
+  const id = lastId.id + 1;
+  const newTalker = { id, ...req.body };
+  data.push(newTalker);
+  await fs.writeFile('src/talker.json', JSON.stringify(data, null, 2));
+
+  return res.status(CREATED).json(newTalker);
+};
+
 module.exports = {
   getAllTalkers,
-  getTalkerById
+  getTalkerById,
+  addNewTalker
 };
