@@ -6,4 +6,4 @@ const cryptLoginData = (_req, res) => {
   return res.status(200).json({ token });
 };
 
-module.exports =  cryptLoginData;
+module.exports = cryptLoginData;

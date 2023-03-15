@@ -1,22 +1,38 @@
 const express = require('express');
+
 const talkerRouter = express.Router();
-const { validateTalkerProps, validateToken } = require('../middlewares/validateProps')
+const { validateAge,
+  validateName,
+  validateTalk,
+  validateToken,
+  validateTalkRate } = require('../middlewares/validateProps');
 const { 
   getAllTalkers,
   getTalkerById,
   addNewTalker,
   editTalker,
   deleteTalker,
-  searchTalker
+  searchTalker,
 } = require('../functions/talkerFunctions');
 
-
 talkerRouter
-  .get('/search',validateToken, searchTalker)
+  .get('/search', validateToken, searchTalker)
   .get('/', getAllTalkers)
   .get('/:id', getTalkerById)
-  .post('/', validateToken, validateTalkerProps, addNewTalker)
-  .put('/:id', validateToken, validateTalkerProps, editTalker )
+  .post('/',
+    validateToken,
+    validateAge,
+    validateName,
+    validateTalk,
+    validateTalkRate,
+    addNewTalker)
+  .put('/:id',
+    validateToken,
+    validateAge,
+    validateName,
+    validateTalk,
+    validateTalkRate,
+    editTalker)
   .delete('/:id', validateToken, deleteTalker);
 
   module.exports = talkerRouter;

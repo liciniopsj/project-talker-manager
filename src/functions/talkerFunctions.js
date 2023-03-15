@@ -1,9 +1,10 @@
-const getTalkerData = require('../functions/getTalkerData');
 const fs = require('fs').promises;
+const getTalkerData = require('./getTalkerData');
 
 const OK = 200;
 const NOT_FOUND = 404;
 const CREATED = 201;
+const NO_CONTENT = 204;
 
 const getAllTalkers = async (_req, res) => {
   const data = await getTalkerData();
@@ -15,10 +16,9 @@ const getTalkerById = async (req, res) => {
   const data = await getTalkerData();
   const filteredData = data.find((talker) => talker.id === +id);
   if (!filteredData) {
-    return res.status(NOT_FOUND).json({ message: 'Pessoa palestrante não encontrada' })
-  } else {
+    return res.status(NOT_FOUND).json({ message: 'Pessoa palestrante não encontrada' });
+  }
     return res.status(OK).json(filteredData);
-  };
 };
 
 const addNewTalker = async (req, res) => {
@@ -39,13 +39,13 @@ const editTalker = async (req, res) => {
   if (!talkerToEdit) {
     return res
       .status(NOT_FOUND)
-      .json({ message: 'Pessoa palestrante não encontrada' })
-  };
+      .json({ message: 'Pessoa palestrante não encontrada' });
+  }
   const index = data.indexOf(talkerToEdit);
   const EditedTalker = { id: +paramId, ...req.body };
   data.splice(index, 1, EditedTalker);
   await fs.writeFile('src/talker.json', JSON.stringify(data, null, 2));
-  return res.status(200).json(EditedTalker);
+  return res.status(OK).json(EditedTalker);
 };
 
 const deleteTalker = async (req, res) => {
@@ -54,7 +54,7 @@ const deleteTalker = async (req, res) => {
   const talkerToDelete = data.findIndex((talker) => talker.id === +id);
   data.splice(talkerToDelete, 1);
   await fs.writeFile('src/talker.json', JSON.stringify(data, null, 2));
-  return res.status(204).end();
+  return res.status(NO_CONTENT).end();
 };
 
 const searchTalker = async (req, res) => {
@@ -73,5 +73,5 @@ module.exports = {
   addNewTalker,
   editTalker,
   deleteTalker,
-  searchTalker
+  searchTalker,
 };
