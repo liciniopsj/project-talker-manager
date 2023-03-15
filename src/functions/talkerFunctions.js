@@ -32,8 +32,35 @@ const addNewTalker = async (req, res) => {
   return res.status(CREATED).json(newTalker);
 };
 
+const editTalker = async (req, res) => {
+  const { id: paramId } = req.params;
+  const data = await getTalkerData();
+  const talkerToEdit = data.find((talker) => talker.id === +paramId);
+  if (!talkerToEdit) {
+    return res
+      .status(NOT_FOUND)
+      .json({ message: 'Pessoa palestrante não encontrada' })
+  };
+  const index = data.indexOf(talkerToEdit);
+  const EditedTalker = { id: +paramId, ...req.body };
+  data.splice(index, 1, EditedTalker);
+  await fs.writeFile('src/talker.json', JSON.stringify(data, null, 2));
+  return res.status(200).json(EditedTalker);
+};
+
+const deleteTalker = async (req, res) => {
+  const { id } = req.params;
+  const data = await getTalkerData();
+  const talkerToDelete = data.findIndex((talker) => talker.id === +id);
+  data.splice(talkerToDelete, 1);
+  await fs.writeFile('src/talker.json', JSON.stringify(data, null, 2));
+  return res.status(204).end();
+};
+
 module.exports = {
   getAllTalkers,
   getTalkerById,
-  addNewTalker
+  addNewTalker,
+  editTalker,
+  deleteTalker
 };

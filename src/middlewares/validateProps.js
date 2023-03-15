@@ -1,8 +1,7 @@
 const UNAUTHORIZED = 401;
 const BAD_REQUEST = 400;
 
-module.exports = function validateTalkerProps(req, res, next) {
-  const { name, age, talk } = req.body;
+function validateToken(req, res, next) {
   const { authorization } = req.headers;
   const nanTest = typeof authorization;
 
@@ -17,6 +16,11 @@ module.exports = function validateTalkerProps(req, res, next) {
       .status(UNAUTHORIZED)
       .json({ message: 'Token inválido' });
   };
+  next();
+}
+
+function validateTalkerProps(req, res, next) {
+  const { name, age, talk } = req.body;
 
   if (!name) {
     return res
@@ -53,4 +57,9 @@ module.exports = function validateTalkerProps(req, res, next) {
   }
   next();
 
+};
+
+module.exports = {
+  validateTalkerProps,
+  validateToken
 };
